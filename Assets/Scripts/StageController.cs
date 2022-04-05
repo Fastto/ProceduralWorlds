@@ -34,6 +34,9 @@ public class StageController : MonoBehaviour
     [SerializeField] private Slider NoiseVarietyScaleS;
     [SerializeField] private Slider NoiseVarietyVolumeS;
     
+    [SerializeField] private Image NoiseMap1;
+    [SerializeField] private Image NoiseMap2;
+    
     
     public bool InstantGeneration
     {
@@ -169,15 +172,33 @@ public class StageController : MonoBehaviour
             noiseVariety = new FastNoiseLite();
             noiseVariety.SetNoiseType(GetNoiseType(NoiseVarietyType));
         }
+
         
+        Texture2D texture = new Texture2D(WorldSize.x, WorldSize.z);
+        //NoiseMap1.GetComponentInParent<CanvasRenderer>().material.mainTexture = texture;
+
         for (int x = 0; x < WorldSize.x; x++)
         {
             for (int z = 0; z < WorldSize.z; z++)
             {
-                int yVol = (int) ((noise.GetNoise(x * NoiseScale, z * NoiseScale) + 1f) * WorldSize.y/2);
+                float noiseValue = noise.GetNoise(x * NoiseScale, z * NoiseScale);
+                int yVol = (int) ((noiseValue + 1f) * WorldSize.y/2);
                 FillRow(x, yVol, z);
+
+                float cv = (noiseValue + 1f)/2f;
+                //Debug.Log(cv);
+                texture.SetPixel(x, z, new Color(cv,cv,cv));
+                //texture.SetPixel(x, z, new Color(,cv,cv));
+                //texture.SetPixel(x, z, Color.red);
             }
         }
+      
+        NoiseMap1.material.mainTexture = texture;
+        texture.Apply();
+        NoiseMap1.enabled = false;
+        NoiseMap1.enabled = true;
+
+
     }
 
     private void FillRow(int x, int yVol, int z)

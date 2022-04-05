@@ -8,6 +8,8 @@ public class CameraCOntroller : MonoBehaviour
     // Start is called before the first frame update
 
     private float targetY = 0;
+
+    private bool isRotating;
     void Start()
     {
         transform.position = new Vector3(-stageController.WorldSize.x / 10, stageController.WorldSize.y * 2,
@@ -16,6 +18,8 @@ public class CameraCOntroller : MonoBehaviour
             stageController.WorldSize.z / 2), Vector3.up, 110f);
         transform.LookAt(new Vector3(stageController.WorldSize.x / 2, targetY,
             stageController.WorldSize.z / 2));
+
+        isRotating = true;
     }
 
     // Update is called once per frame
@@ -43,20 +47,45 @@ public class CameraCOntroller : MonoBehaviour
         
         if (Input.GetKey(KeyCode.A))
         {
-            targetY -= .5f;
+            targetY -= 1f;
+            transform.LookAt(new Vector3(stageController.WorldSize.x / 2, targetY,
+                stageController.WorldSize.z / 2));
         }
         
         if (Input.GetKey(KeyCode.D))
         {
-            targetY += .5f;
+            targetY += 1f;
+            transform.LookAt(new Vector3(stageController.WorldSize.x / 2, targetY,
+                stageController.WorldSize.z / 2));
         }
         
+        if (Input.GetKey(KeyCode.Space))
+        {
+            isRotating = !isRotating;
+        }
+        
+        if (Input.GetKey(KeyCode.Z))
+        {
+            Rotate(2f);
+        }
+        
+        if (Input.GetKey(KeyCode.C))
+        {
+            Rotate(-2f);
+        }
+
+        if (isRotating)
+        {
+            Rotate();
+        }
+
+    }
+
+    private void Rotate(float angle = .25f)
+    {
         transform.RotateAround(new Vector3(stageController.WorldSize.x / 2, targetY,
-            stageController.WorldSize.z / 2), Vector3.up, .25f);
+            stageController.WorldSize.z / 2), Vector3.up, angle);
         transform.LookAt(new Vector3(stageController.WorldSize.x / 2, targetY,
             stageController.WorldSize.z / 2));
-
-
- 
     }
 }
